@@ -48,3 +48,23 @@ def to_rpn (token_list):
     return output
 
 print(to_rpn([-2.0, '+', 2.0, '*', -22.987]))
+
+def eval_rpn (output):
+    stack = []
+    for token in output:
+        if isinstance(token, float):
+            stack.append(token)
+        elif token in '+-*/':
+            b = stack.pop()
+            a = stack.pop()
+            if token == '+':
+                stack.append(a + b)
+            elif token == '-':
+                stack.append(a - b)
+            elif token == '*':
+                stack.append(a * b)
+            elif token == '/':
+                stack.append(a / b)
+    return stack[0]
+
+print(eval_rpn([-2.0, 2.0, -22.987, '*', '+']))
