@@ -1,5 +1,5 @@
-import sys
 import argparse
+import sys
 
 from toolkit.calculator import calculate
 from toolkit.converter import convert
