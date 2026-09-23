@@ -1,4 +1,3 @@
-
 def tokenize (x):
     token_list = []
     number = ''
@@ -14,7 +13,7 @@ def tokenize (x):
                     number = '-'
             else:
                 token_list.append(x[i])
-        elif x[i] in '*/()':
+        elif x[i] in '*/%()':
             token_list.append(x[i])
         elif x[i].isspace():
             continue
@@ -23,12 +22,11 @@ def tokenize (x):
     return token_list
 
 
-
 def validate (token_list):
     if not token_list:
         raise ValueError('Error: symbols not found')
     
-    if isinstance(token_list[0], str) and token_list[0] in '+-*/':
+    if isinstance(token_list[0], str) and token_list[0] in '+-*/%':
         raise ValueError('Error: invalid operation syntax')
     
     if not isinstance(token_list[-1], float) and token_list[-1] != ')':
@@ -37,8 +35,8 @@ def validate (token_list):
     for i in range(len(token_list) - 1):
         a = token_list[i]
         b = token_list[i+1]
-        if (isinstance(a, str) and a in '+-*/' 
-            and isinstance(b, str) and b in '+-*/'):
+        if (isinstance(a, str) and a in '+-*/%' 
+            and isinstance(b, str) and b in '+-*/%'):
                 raise ValueError('Error: invalid operation')
     balance = 0
     for token in token_list:
@@ -58,12 +56,12 @@ def validate (token_list):
 def to_rpn (token_list):
     output = []
     stack = []
-    PRIORITY = {'+': 1, '-': 1, '*': 2, '/': 2}
+    PRIORITY = {'+': 1, '-': 1, '*': 2, '/': 2, '%': 2}
 
     for token in token_list:
         if isinstance(token, float):
             output.append(token)
-        elif token in '+-*/':
+        elif token in '+-*/%':
             while stack and stack[-1] != '(' and PRIORITY[stack[-1]] >= PRIORITY[token]:
                 output.append(stack.pop())
             stack.append(token)
@@ -79,13 +77,12 @@ def to_rpn (token_list):
     return output
 
 
-
 def eval_rpn (output):
     stack = []
     for token in output:
         if isinstance(token, float):
             stack.append(token)
-        elif token in '+-*/':
+        elif token in '+-*/%':
             b = stack.pop()
             a = stack.pop()
             if token == '+':
@@ -95,9 +92,17 @@ def eval_rpn (output):
             elif token == '*':
                 stack.append(a * b)
             elif token == '/':
-                stack.append(a / b)
+                if b == 0:
+                    raise ValueError('Error: zero division')
+                else:
+                    stack.append(a / b)
+            elif token == '%':
+                if b == 0:
+                    raise ValueError('Error: zero division')
+                else:
+                    stack.append(a % b)            
+                 
     return stack[0]
-
 
 def calculate(expr):
     tokens = tokenize(expr)
