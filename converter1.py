@@ -31,3 +31,26 @@ def from_celsius(celsius, unit):
     else:
         raise ValueError(f"unknown temp unit: {unit}")
 
+def convert(value, from_unit, to_unit):
+    from_unit = from_unit.lower()
+    to_unit = to_unit.lower()
+
+    g1 = get_group(from_unit)
+    g2 = get_group(to_unit)
+
+    if g1 != g2:
+        raise ValueError('Error: incompatible units')
+
+    if g1 == 'mass':
+        M = MASS
+        return value / M[from_unit] * M[to_unit]
+
+    if g1 == 'length':
+        L = LENGTHS
+        return value / L[from_unit] * L[to_unit]
+
+    if g1 == 'temp':
+        celsius = to_celsius(value, from_unit)
+        if celsius < -273.15:
+            raise ValueError('Error: below absolute zero')
+        return from_celsius(celsius, to_unit)
