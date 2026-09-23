@@ -22,7 +22,38 @@ def tokenize (x):
             raise ValueError(f"Неизвестный символ: {x[i]}")
     return token_list
 
-print(tokenize('-2+2*-22.987'))
+
+
+def validate (token_list):
+    if not token_list:
+        raise ValueError('Error: symbols not found')
+    
+    if isinstance(token_list[0], str) and token_list[0] in '+-*/':
+        raise ValueError('Error: invalid operation syntax')
+    
+    if not isinstance(token_list[-1], float) and token_list[-1] != ')':
+        raise ValueError('Error: last element lost')
+    
+    for i in range(len(token_list) - 1):
+        a = token_list[i]
+        b = token_list[i+1]
+        if (isinstance(a, str) and a in '+-*/' 
+            and isinstance(b, str) and b in '+-*/'):
+                raise ValueError('Error: invalid operation')
+    balance = 0
+    for token in token_list:
+        if token == '(':
+            balance += 1
+        elif token == ')':
+            balance -= 1
+            if balance < 0:
+                raise ValueError('Error: unbalanced )')
+    if balance > 0:
+        raise ValueError('Error: unbalanced (')
+    
+    else:
+        pass
+
 
 def to_rpn (token_list):
     output = []
@@ -47,7 +78,7 @@ def to_rpn (token_list):
 
     return output
 
-print(to_rpn([-2.0, '+', 2.0, '*', -22.987]))
+
 
 def eval_rpn (output):
     stack = []
@@ -67,4 +98,19 @@ def eval_rpn (output):
                 stack.append(a / b)
     return stack[0]
 
-print(eval_rpn([-2.0, 2.0, -22.987, '*', '+']))
+
+def calculate(expr):
+    tokens = tokenize(expr)
+    validate(tokens)
+    rpn = to_rpn(tokens)
+    return eval_rpn(rpn)
+
+while True:
+    expr = input()
+
+    try:
+        result = calculate(expr)
+        print(result)
+    except ValueError as e:
+        print(f'Ошибка:{e}')
+
