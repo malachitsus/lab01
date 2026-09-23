@@ -49,8 +49,7 @@ def validate (token_list):
     if balance > 0:
         raise ValueError('Error: unbalanced (')
     
-    else:
-        pass
+    
 
 
 def to_rpn (token_list):
@@ -110,12 +109,5 @@ def calculate(expr):
     rpn = to_rpn(tokens)
     return eval_rpn(rpn)
 
-while True:
-    expr = input()
 
-    try:
-        result = calculate(expr)
-        print(result)
-    except ValueError as e:
-        print(f'Ошибка:{e}')
 
