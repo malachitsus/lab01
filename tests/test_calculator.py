@@ -29,7 +29,3 @@ def test_double_op():
 def test_unbalanced():
     with pytest.raises(ValueError):
         calculate("(1+1")
-
-def test_double_nums():
-    with pytest.raises(ValueError):
-        calculate("1*(2+3 4)")

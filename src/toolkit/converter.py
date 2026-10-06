@@ -2,6 +2,19 @@ MASS = {'kg': 1, 'g': 1000}
 LENGTHS = {'km': 0.001, 'm': 1, 'cm': 100, 'mm': 1000}
 TEMPERATURES = {'c', 'k', 'f'}
 
+# 1) Определитель группы
+'''Определяет группу, к которой относится единица измерения.
+
+    Args:
+        unit: Строка с обозначением единицы измерения (например, 'kg', 'm', 'c').
+
+    Returns:
+        Строка с названием группы: 'length', 'mass' или 'temp'.
+
+    Raises:
+        ValueError: Если единица измерения неизвестна.
+    '''
+
 def get_group(unit):
     if unit in LENGTHS:
         return 'length'
@@ -10,6 +23,19 @@ def get_group(unit):
     if unit in TEMPERATURES:
         return 'temp'
     raise ValueError(f"unknown unit: {unit}")
+
+# 2) Перевод температур к Цельсиям
+    '''Определяет группу, к которой относится единица измерения.
+
+    Args:
+        unit: Строка с обозначением единицы измерения (например, 'kg', 'm', 'c').
+
+    Returns:
+        Строка с названием группы: 'length', 'mass' или 'temp'.
+
+    Raises:
+        ValueError: Если единица измерения неизвестна.
+    '''
 
 def to_celsius(value, unit):
     if unit == 'c':
@@ -21,6 +47,19 @@ def to_celsius(value, unit):
     else:
         raise ValueError(f"unknown temp unit: {unit}")
 
+# 3) Перевод из Цельсий
+    '''Переводит значение температуры из градусов Цельсия в указанную единицу.
+
+    Args:
+        celsius: Значение температуры в градусах Цельсия.
+        unit: Целевая единица измерения температуры ('c', 'k' или 'f').
+
+    Returns:
+        Значение температуры в указанной единице измерения.
+
+    Raises:
+        ValueError: Если единица измерения температуры неизвестна.
+    '''
 def from_celsius(celsius, unit):
     if unit == 'c':
         return celsius
@@ -31,6 +70,21 @@ def from_celsius(celsius, unit):
     else:
         raise ValueError(f"unknown temp unit: {unit}")
 
+# 4) Конечный конвертер 
+    '''Конвертирует значение из одной единицы измерения в другую.
+
+    Args:
+        value: Числовое значение для конвертации.
+        from_unit: Исходная единица измерения.
+        to_unit: Целевая единица измерения.
+
+    Returns:
+        Сконвертированное значение в целевой единице измерения.
+
+    Raises:
+        ValueError: Если единицы относятся к разным группам,
+            единица измерения неизвестна или температура ниже абсолютного нуля.
+    '''
 def convert(value, from_unit, to_unit):
     from_unit = from_unit.lower()
     to_unit = to_unit.lower()
@@ -39,7 +93,7 @@ def convert(value, from_unit, to_unit):
     g2 = get_group(to_unit)
 
     if g1 != g2:
-        raise ValueError('Error: incompatible units')
+        raise ValueError('Incompatible units')
 
     if g1 == 'mass':
         M = MASS
@@ -52,5 +106,5 @@ def convert(value, from_unit, to_unit):
     if g1 == 'temp':
         celsius = to_celsius(value, from_unit)
         if celsius < -273.15:
-            raise ValueError('Error: below absolute zero')
+            raise ValueError('Below absolute zero')
         return from_celsius(celsius, to_unit)

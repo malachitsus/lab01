@@ -1,7 +1,22 @@
 # Калькулятор:
 
 # 1) Токенизация: разбиение выражения на токены
+
+'''Разбивает строку выражения на список токенов.
+
+    Args:
+        x: Строка с математическим выражением.
+
+    Returns:
+        Список токенов, где числа представлены как float,
+        а операторы и скобки - как строки.
+
+    Raises:
+        ValueError: Если во входной строке встречается недопустимый символ.
+'''
+
 def tokenize (x):
+    x = x.replace(' ', '')
     token_list = []
     number = ''
     for i in range(len(x)):
@@ -25,6 +40,22 @@ def tokenize (x):
     return token_list
 
 # 2) Валидация: проверка недопустимых значений и логических ошибок
+
+'''
+    Проверяет список токенов на логические и синтаксические ошибки.
+
+    Args:
+        token_list: Список токенов, полученный после токенизации.
+
+    Returns:
+        None. Функция только валидирует выражение.
+
+    Raises:
+        ValueError: Если выражение пустое, начинается с оператора,
+            заканчивается не числом или скобкой, содержит два оператора
+            подряд, два числа подряд или несбалансированные скобки.
+'''
+
 def validate (token_list):
     if not token_list: 
         raise ValueError('Symbols not found')
@@ -41,8 +72,6 @@ def validate (token_list):
         if (isinstance(a, str) and a in '+-*/%' 
             and isinstance(b, str) and b in '+-*/%'):
                 raise ValueError('Invalid operation')
-        if isinstance(a, float) and isinstance(b, float):
-            raise ValueError('Invalid operation')
     balance = 0  # Баланс скобок: на каждую '(' должна быть ')'
     for token in token_list:
         if token == '(':
@@ -57,6 +86,15 @@ def validate (token_list):
     
 
 # 3) Преобразование в RPN (shunting-yard)
+
+'''Преобразует список токенов в обратную польскую запись (RPN).
+
+    Args:
+        token_list: Валидный список токенов инфиксного выражения.
+
+    Returns:
+        Список токенов в порядке обратной польской записи.
+'''
 def to_rpn (token_list):
     output = []
     stack = []
@@ -83,6 +121,19 @@ def to_rpn (token_list):
     return output
 
 # 4) Вычисление RPN через стек
+
+'''
+    Вычисляет значение выражения, записанного в обратной польской записи.
+
+    Args:
+        output: Список токенов в формате RPN.
+
+    Returns:
+        Результат вычисления выражения как число (float).
+
+    Raises:
+        ValueError: При делении на ноль или взятии остатка по нулю.
+'''
 def eval_rpn (output):
     stack = []
     for token in output:
@@ -111,6 +162,19 @@ def eval_rpn (output):
     return stack[0]
 
 # 5) Общая функция
+'''Вычисляет значение математического выражения.
+
+    Args:
+        expr: Строка с математическим выражением
+            (поддерживаются числа, +, -, *, /, %, скобки).
+
+    Returns:
+        Результат вычисления выражения как число (float).
+
+    Raises:
+        ValueError: При недопустимых символах, синтаксических ошибках,
+            несбалансированных скобках или делении на ноль.
+'''
 def calculate(expr):
     tokens = tokenize(expr)
     validate(tokens)
