@@ -72,6 +72,9 @@ def validate (token_list):
         if (isinstance(a, str) and a in '+-*/%' 
             and isinstance(b, str) and b in '+-*/%'):
                 raise ValueError('Invalid operation')
+        if a == '(' and b == ')':
+            raise ValueError('Empty brackets')
+            
     balance = 0  # Баланс скобок: на каждую '(' должна быть ')'
     for token in token_list:
         if token == '(':
